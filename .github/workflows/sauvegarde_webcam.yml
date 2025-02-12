@@ -26,7 +26,7 @@ jobs:
           from datetime import datetime
           url = 'https://www.meteo-lille.fr/meteo_cam.php?u=1738844192591'  # URL de l'image
           img_data = requests.get(url).content  # Télécharger l'image
-          timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')  # Ajouter un horodatage à l'image
+          timestamp = (datetime.now() + timedelta(hours=1)).strftime('%Y-%m-%d_%H-%M-%S') # Ajouter un horodatage à l'image
           file_path = f'./images/webcam_{timestamp}.jpg'  # Spécifier le chemin de sauvegarde
           with open(file_path, 'wb') as handler:
               handler.write(img_data)  # Sauvegarder l'image dans le dossier 'images'
