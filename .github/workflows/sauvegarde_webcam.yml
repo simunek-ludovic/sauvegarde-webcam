@@ -2,7 +2,7 @@ name: Sauvegarde Webcam Lille
 
 on:
   schedule:
-    - cron: '*/1 * * * *'  # Exécution toutes les minutes
+    - cron: '*/5 * * * *'  # Exécution toutes les minutes
   workflow_dispatch:  # Permet de l'exécuter manuellement aussi
 
 jobs:
