@@ -1,10 +1,9 @@
-# Workflow pour sauvegarder la webcam toutes les 5 minutes
 name: Sauvegarde Webcam Lille
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # Exécute le script toutes les 5 minutes
-  workflow_dispatch:  # Permet de l'exécuter manuellement
+    - cron: '*/5 * * * *'  # Exécute toutes les 5 minutes
+  workflow_dispatch:  # Permet de le lancer manuellement
 
 jobs:
   capture_image:
@@ -16,22 +15,30 @@ jobs:
       - name: Installer les dépendances
         run: pip install requests
 
+      - name: Créer un dossier pour les images
+        run: |
+          mkdir -p ./images  # Créer un dossier appelé 'images' s'il n'existe pas déjà
+
       - name: Télécharger l'image
         run: |
           python -c "
           import requests
           from datetime import datetime
-          url = 'https://www.meteo-lille.fr/meteo_cam.php?u=1738844192591'
-          img_data = requests.get(url).content
-          timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-          with open(f'webcam_{timestamp}.jpg', 'wb') as handler:
-              handler.write(img_data)
+          url = 'https://www.meteo-lille.fr/meteo_cam.php?u=1738844192591'  # URL de l'image
+          img_data = requests.get(url).content  # Télécharger l'image
+          timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')  # Ajouter un horodatage à l'image
+          file_path = f'./images/webcam_{timestamp}.jpg'  # Spécifier le chemin de sauvegarde
+          with open(file_path, 'wb') as handler:
+              handler.write(img_data)  # Sauvegarder l'image dans le dossier 'images'
           "
 
       - name: Commit et push des images
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Utilisation du token secret pour l'authentification
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add .
-          git commit -m 'Ajout nouvelle image'
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git  # Authentification avec le token
+          git add ./images/*  # Ajouter les nouvelles images dans le dossier 'images'
+          git commit -m 'Ajout nouvelle image' || echo "Aucune modification à commit"
           git push
