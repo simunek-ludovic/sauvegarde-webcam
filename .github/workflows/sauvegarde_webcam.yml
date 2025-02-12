@@ -1,0 +1,35 @@
+name: Sauvegarde Webcam Lille
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # Exécute le script toutes les 5 minutes
+
+jobs:
+  capture_image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Installer les dépendances
+        run: pip install requests
+
+      - name: Télécharger l'image
+        run: |
+          python -c "
+          import requests
+          from datetime import datetime
+          url = 'https://www.meteo-lille.fr/meteo_cam.php?u=1738844192591'
+          img_data = requests.get(url).content
+          timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+          with open(f'webcam_{timestamp}.jpg', 'wb') as handler:
+              handler.write(img_data)
+          "
+
+      - name: Commit et push des images
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add .
+          git commit -m 'Ajout nouvelle image'
+          git push
