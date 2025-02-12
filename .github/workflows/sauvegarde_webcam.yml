@@ -1,9 +1,8 @@
-# changement durée 
 name: Sauvegarde Webcam Lille
 
 on:
   schedule:
-    - cron: '*/1 * * * *'  # Exécute toutes les 1 minutes
+    - cron: '*/1 * * * *'  # Exécute toutes les 1 minute
   workflow_dispatch:  # Permet de le lancer manuellement
 
 jobs:
@@ -24,10 +23,10 @@ jobs:
         run: |
           python -c "
           import requests
-          from datetime import datetime
+          from datetime import datetime, timedelta  # Ajout de timedelta ici
           url = 'https://www.meteo-lille.fr/meteo_cam.php?u=1738844192591'  # URL de l'image
           img_data = requests.get(url).content  # Télécharger l'image
-          timestamp = (datetime.now() + timedelta(hours=1)).strftime('%Y-%m-%d_%H-%M-%S') # Ajouter un horodatage à l'image
+          timestamp = (datetime.now() + timedelta(hours=1)).strftime('%Y-%m-%d_%H-%M-%S') # Ajouter 1h à l'horodatage
           file_path = f'./images/webcam_{timestamp}.jpg'  # Spécifier le chemin de sauvegarde
           with open(file_path, 'wb') as handler:
               handler.write(img_data)  # Sauvegarder l'image dans le dossier 'images'
