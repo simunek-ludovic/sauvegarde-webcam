@@ -2,8 +2,8 @@ name: Sauvegarde Webcam Lille
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # Exécution toutes les minutes
-  workflow_dispatch:  # Permet de l'exécuter manuellement aussi
+    - cron: '*/1 * * * *'  # Exécute toutes les 1 minute
+  workflow_dispatch:  # Permet de le lancer manuellement
 
 jobs:
   capture_image:
@@ -18,7 +18,6 @@ jobs:
       - name: Créer un dossier pour les images
         run: |
           mkdir -p ./images  # Créer un dossier appelé 'images' s'il n'existe pas déjà
-
       - name: Télécharger l'image
         run: |
           python -c "
@@ -31,7 +30,6 @@ jobs:
           with open(file_path, 'wb') as handler:
               handler.write(img_data)  # Sauvegarder l'image dans le dossier 'images'
           "
-
       - name: Commit et push des images
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Utilisation du token secret pour l'authentification
