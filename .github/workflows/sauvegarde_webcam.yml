@@ -1,20 +1,16 @@
 name: Sauvegarde Webcam Lille
-
 on:
-  schedule:
-    - cron: '*/1 * * * *'  # Exécute toutes les 1 minute
+  # schedule:
+  #   - cron: '*/1 * * * *'  # Exécute toutes les 1 minute
   workflow_dispatch:  # Permet de le lancer manuellement
-
 jobs:
   capture_image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
       - name: Installer les dépendances
         run: pip install requests
-
       - name: Créer un dossier pour les images
         run: |
           mkdir -p ./images  # Créer un dossier appelé 'images' s'il n'existe pas déjà
